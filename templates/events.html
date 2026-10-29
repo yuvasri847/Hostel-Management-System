@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Event Management</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 18px 32px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #5145cd;
+    font-size: 18px;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.brand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background: #eeedff;
+    border-radius: 12px;
+    font-size: 23px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.nav-links a {
+    display: inline-block;
+    padding: 10px 14px;
+    border-radius: 9px;
+    color: #555b70;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: #eeedff;
+    color: #5145cd;
+}
+
+.nav-links a.active {
+    background: #5145cd;
+    color: #ffffff;
+}
+
+        header {
+            background: #173b70;
+            color: white;
+            padding: 24px 32px;
+        }
+
+        header h1 { margin: 0 0 8px; }
+
+        header p { margin: 0; color: #dbeafe; }
+
+        main {
+            max-width: 1250px;
+            margin: auto;
+            padding: 28px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .panel {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+            overflow-x: auto;
+        }
+
+        a.button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            padding: 12px 17px;
+            border-radius: 7px;
+        }
+
+        a.back { background: #475569; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 13px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #eff6ff;
+            color: #173b70;
+        }
+
+        tr:hover { background: #f8fafc; }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            main { padding: 15px; }
+        }
+    </style>
+</head>
+
+<body>
+
+
+<nav class="navbar">
+    <a href="/" class="brand">
+        <span class="brand-icon">🏨</span>
+        <span>Hostel Event Management System</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/">Dashboard</a>
+        <a href="/events" class="active">Events</a>
+        <a href="/registrations">Registrations</a>
+        <a href="/attendance">Attendance</a>
+        <a href="/attendance-report">Reports</a>
+    </div>
+</nav>
+
+
+    <header>
+        <h1>Event Management</h1>
+       <p>
+    View, organize, and manage hostel events, including
+    event dates, venues, budgets, and organizer details.
+</p>
+    </header>
+
+    <main>
+        <div class="topbar">
+            <h2>All Events ({{ events|length }})</h2>
+            <div>
+                <a class="button back" href="/">Dashboard</a>
+                <a class="button" href="/events/add">+ Add Event</a>
+            </div>
+        </div>
+
+        <section class="panel">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Event Name</th>
+                        <th>Date</th>
+                        <th>Venue</th>
+                        <th>Budget (₹)</th>
+                        <th>Organizer ID</th>
+                        
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for event in events %}
+                    <tr>
+                        <td>{{ event[0] }}</td>
+                        <td>{{ event[1] }}</td>
+                        <td>{{ event[2].strftime('%d-%b-%Y') }}</td>
+                        <td>{{ event[3] }}</td>
+                        <td>{{ "%.2f"|format(event[4]) }}</td>
+                        <td>{{ event[5] }}</td>
+                        <td>
+                            <form method="POST" action="/events/delete"
+                                  onsubmit="return confirm('Delete this event? Its registrations, attendance, expenses and other linked records will also be deleted.');">
+                                <input type="hidden" name="event_id" value="{{ event[0] }}">
+                                <button type="submit"
+                                        style="padding:7px 13px;border:none;border-radius:8px;background:#fdeaea;color:#b83232;font-weight:700;font-size:12px;cursor:pointer;">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7">No events found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>Hostel Event Management System</footer>
+</body>
+</html>

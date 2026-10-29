@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance | Hostel Event Management System</title>
+
+    <style>
+        :root {
+            --primary: #5145cd;
+            --primary-dark: #3f35a8;
+            --light: #eeedff;
+            --background: #f6f7fc;
+            --white: #ffffff;
+            --text: #20243a;
+            --muted: #777d92;
+            --border: #e8eaf2;
+            --green: #16845b;
+            --red: #c24141;
+            --shadow: 0 8px 28px rgba(39, 42, 85, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 3px 12px rgba(0,0,0,.04);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            min-height: 76px;
+            margin: auto;
+            padding: 13px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--primary);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            background: var(--light);
+            border-radius: 12px;
+            font-size: 23px;
+        }
+
+        .nav-links { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .nav-links a {
+            padding: 9px 13px;
+            border-radius: 9px;
+            color: #62687d;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover { background: var(--light); color: var(--primary); }
+        .nav-links a.active { background: var(--primary); color: white; }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 32px;
+        }
+
+        .breadcrumb { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+        .breadcrumb a { color: var(--primary); font-weight: 600; }
+
+        .page-header {
+            padding: 32px 35px;
+            border-radius: 20px;
+            color: white;
+            background: linear-gradient(120deg, #4034ad, #7568ed);
+            box-shadow: 0 12px 28px rgba(81,69,205,.16);
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.3px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.2);
+            margin-bottom: 10px;
+        }
+
+        .page-header h1 { font-size: clamp(25px,3vw,34px); margin-bottom: 7px; }
+        .page-header p { color: rgba(255,255,255,.86); font-size: 14px; }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .card-header { padding: 23px 26px; border-bottom: 1px solid var(--border); }
+        .card-header h2 { font-size: 19px; }
+        .card-header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+        .table-wrapper { width: 100%; overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+        thead { background: #f8f8fe; }
+
+        th {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            color: #777d92;
+            font-size: 11px;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+        }
+
+        td { padding: 16px 20px; border-bottom: 1px solid #f0f1f6; font-size: 13px; color: #555b70; }
+        tbody tr:hover { background: #fafaff; }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .id-badge {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 7px;
+            background: var(--light);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .student-name { color: var(--text); font-weight: 700; }
+
+        .form-select {
+            min-width: 140px;
+            padding: 9px 11px;
+            border: 1px solid #dfe2ee;
+            border-radius: 9px;
+            background: white;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-select:focus { border-color: var(--primary); }
+
+        .save-button {
+            padding: 9px 14px;
+            border: none;
+            border-radius: 9px;
+            background: var(--primary);
+            color: white;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .save-button:hover { background: var(--primary-dark); }
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .present { background: #e4f7ed; color: #13754f; }
+        .absent { background: #fdeaea; color: #b83232; }
+        .unmarked { background: #f0f1f5; color: #696f82; }
+
+        .note {
+            padding: 14px 18px;
+            background: #f7f6ff;
+            color: #6158a5;
+            border-radius: 10px;
+            font-size: 12px;
+            margin: 20px 26px 25px;
+        }
+
+        .empty-state { text-align: center; padding: 35px; color: var(--muted); }
+
+        .footer { padding: 8px 10px 20px; text-align: center; color: var(--muted); font-size: 12px; }
+        .footer strong { color: var(--primary); }
+
+        @media (max-width: 850px) {
+            .nav-inner { padding: 14px 20px; }
+            .container { padding: 24px 18px; }
+        }
+
+        @media (max-width: 600px) {
+            .nav-inner { align-items: flex-start; flex-direction: column; }
+            .brand { font-size: 15px; }
+            .nav-links a { padding: 8px 9px; font-size: 12px; }
+            .page-header { padding: 25px 22px; }
+            .card-header { padding: 20px; }
+            th, td { padding: 13px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="/" class="brand">
+                <span class="brand-icon">🏨</span>
+                <span>Hostel Event Management System</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/events">Events</a>
+                <a href="/registrations">Registrations</a>
+                <a href="/attendance" class="active">Attendance</a>
+                <a href="/attendance-report">Reports</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            Home / <a href="/">Dashboard</a> / Attendance
+        </div>
+
+        <section class="page-header">
+            <span class="eyebrow">STUDENT SERVICES</span>
+            <h1>Attendance Management</h1>
+            <p>Record and update student attendance for registered hostel events.</p>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h2>📋 Student Attendance</h2>
+                <p>Select Present or Absent and save the attendance record.</p>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Registration ID</th>
+                            <th>Student ID</th>
+                            <th>Event</th>
+                            <th>Attendance Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for record in attendance_records %}
+                        <tr>
+                            <td><span class="id-badge">#{{ record[0] }}</span></td>
+                            <td><span class="student-name">{{ record[1] }}</span></td>
+                            <td>{{ record[2] }} <span class="id-badge">#{{ record[6] }}</span></td>
+                            <td>
+                                {% if record[4] == 'Present' %}
+                                    <span class="status present">Present</span>
+                                {% elif record[4] == 'Absent' %}
+                                    <span class="status absent">Absent</span>
+                                {% else %}
+                                    <span class="status unmarked">Not Marked</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="/attendance"
+                                      style="display:flex;gap:8px;align-items:center;">
+                                    <input type="hidden" name="registration_id" value="{{ record[0] }}">
+
+                                    <select class="form-select" name="attendance_status" required>
+                                        <option value="">Choose status</option>
+                                        <option value="Present"
+                                            {% if record[4] == 'Present' %}selected{% endif %}>
+                                            Present
+                                        </option>
+                                        <option value="Absent"
+                                            {% if record[4] == 'Absent' %}selected{% endif %}>
+                                            Absent
+                                        </option>
+                                    </select>
+
+                                    <button type="submit" class="save-button">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <div style="font-size:30px;margin-bottom:8px;">📋</div>
+                                    <strong>No active registrations found</strong>
+                                    <p>Register students for events before marking attendance.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="note">
+                💡 Attendance can be marked only for active registrations, Saving an existing record updates its status.
+            </div>
+        </section>
+
+        <footer class="footer">
+            <strong>Hostel Event Management System</strong> · Attendance Portal
+        </footer>
+    </main>
+</body>
+</html>

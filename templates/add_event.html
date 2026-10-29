@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Add Event | Hostel Event Management</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #173b70;
+            color: white;
+            padding: 24px 32px;
+        }
+
+        main {
+            max-width: 700px;
+            margin: 35px auto;
+            padding: 0 18px;
+        }
+
+        .panel {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        button, .back {
+            display: inline-block;
+            margin-top: 22px;
+            padding: 12px 18px;
+            border: 0;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .back { background: #475569; }
+
+        .hint {
+            color: #64748b;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Add New Event</h1>
+        <p>Create an event in your Oracle database</p>
+    </header>
+
+    <main>
+        <section class="panel">
+            <form method="POST" action="/events/add">
+                <label for="event_id">Event ID</label>
+                <input
+                    id="event_id"
+                    name="event_id"
+                    type="number"
+                    min="1"
+                    max="999999"
+                    required
+                >
+                <p class="hint">Enter a unique ID not already in use.</p>
+
+                <label for="event_name">Event Name</label>
+                <input
+                    id="event_name"
+                    name="event_name"
+                    type="text"
+                    maxlength="100"
+                    required
+                >
+
+                <label for="event_date">Event Date</label>
+                <input
+                    id="event_date"
+                    name="event_date"
+                    type="date"
+                    required
+                >
+
+                <label for="venue">Venue</label>
+                <input
+                    id="venue"
+                    name="venue"
+                    type="text"
+                    maxlength="100"
+                    required
+                >
+
+                <label for="budget">Budget (₹)</label>
+                <input
+                    id="budget"
+                    name="budget"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+                <label for="organizer_id">Organizer ID</label>
+                <select id="organizer_id" name="organizer_id" required>
+                    <option value="">Select an organizer</option>
+                    {% for organizer in organizers %}
+                    <option value="{{ organizer[0] }}">
+                        Organizer {{ organizer[0] }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Save Event</button>
+                <a class="back" href="/events">Cancel</a>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

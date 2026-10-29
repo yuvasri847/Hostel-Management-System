@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Reports | Hostel Event Management System</title>
+
+    <style>
+        :root {
+            --primary: #5145cd;
+            --primary-dark: #3f35a8;
+            --light: #eeedff;
+            --background: #f6f7fc;
+            --white: #ffffff;
+            --text: #20243a;
+            --muted: #777d92;
+            --border: #e8eaf2;
+            --green: #16845b;
+            --red: #c24141;
+            --shadow: 0 8px 28px rgba(39, 42, 85, 0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 3px 12px rgba(0,0,0,.04);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            min-height: 76px;
+            margin: auto;
+            padding: 13px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--primary);
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .brand-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            background: var(--light);
+            border-radius: 12px;
+            font-size: 23px;
+        }
+
+        .nav-links { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .nav-links a {
+            padding: 9px 13px;
+            border-radius: 9px;
+            color: #62687d;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover { background: var(--light); color: var(--primary); }
+        .nav-links a.active { background: var(--primary); color: white; }
+
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            padding: 32px;
+        }
+
+        .breadcrumb { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
+        .breadcrumb a { color: var(--primary); font-weight: 600; }
+
+        .page-header {
+            padding: 32px 35px;
+            border-radius: 20px;
+            color: white;
+            background: linear-gradient(120deg, #4034ad, #7568ed);
+            box-shadow: 0 12px 28px rgba(81,69,205,.16);
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.3px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.14);
+            border: 1px solid rgba(255,255,255,.2);
+            margin-bottom: 10px;
+        }
+
+        .page-header h1 { font-size: clamp(25px,3vw,34px); margin-bottom: 7px; }
+        .page-header p { color: rgba(255,255,255,.86); font-size: 14px; }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            padding: 23px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: white;
+            box-shadow: var(--shadow);
+            transition: transform .2s ease;
+        }
+
+        .stat-card:hover { transform: translateY(-3px); }
+
+        .stat-icon {
+            width: 43px;
+            height: 43px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: var(--light);
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 { color: var(--muted); font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+        .stat-value { font-size: 31px; font-weight: 800; letter-spacing: -.7px; }
+        .stat-description { color: var(--muted); font-size: 12px; margin-top: 5px; }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .card-header {
+            padding: 23px 26px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 { font-size: 19px; }
+        .card-header p { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+        .table-wrapper { width: 100%; overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+        thead { background: #f8f8fe; }
+
+        th {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            color: #777d92;
+            font-size: 11px;
+            letter-spacing: .6px;
+            text-transform: uppercase;
+        }
+
+        td { padding: 16px 20px; border-bottom: 1px solid #f0f1f6; font-size: 13px; color: #555b70; }
+        tbody tr:hover { background: #fafaff; }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .event-name { color: var(--text); font-weight: 700; }
+
+        .id-badge {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 7px;
+            background: var(--light);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .count-present { color: #13754f; font-weight: 800; }
+        .count-absent { color: #b83232; font-weight: 800; }
+
+        .percentage {
+            display: inline-block;
+            min-width: 62px;
+            text-align: center;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #e4f7ed;
+            color: #13754f;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .percentage-zero {
+            background: #fdeaea;
+            color: #b83232;
+        }
+
+        .percentage-unmarked {
+            background: #f0f1f5;
+            color: #696f82;
+        }
+
+        .table-footer {
+            padding: 15px 24px;
+            background: #fcfcff;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer { padding: 8px 10px 20px; text-align: center; color: var(--muted); font-size: 12px; }
+        .footer strong { color: var(--primary); }
+
+        @media (max-width: 1000px) {
+            .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 850px) {
+            .nav-inner { padding: 14px 20px; }
+            .container { padding: 24px 18px; }
+        }
+
+        @media (max-width: 600px) {
+            .nav-inner { align-items: flex-start; flex-direction: column; }
+            .brand { font-size: 15px; }
+            .nav-links a { padding: 8px 9px; font-size: 12px; }
+            .page-header { padding: 25px 22px; }
+            .stats { grid-template-columns: 1fr; gap: 13px; }
+            .stat-card { padding: 19px; }
+            .card-header { padding: 20px; }
+            th, td { padding: 13px 15px; }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-inner">
+            <a href="/" class="brand">
+                <span class="brand-icon">🏨</span>
+                <span>Hostel Event Management System</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/events">Events</a>
+                <a href="/registrations">Registrations</a>
+                <a href="/attendance">Attendance</a>
+                <a href="/attendance-report" class="active">Reports</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="breadcrumb">
+            Home / <a href="/">Dashboard</a> / Attendance Reports
+        </div>
+
+        <section class="page-header">
+            <span class="eyebrow">REPORTING & ANALYTICS</span>
+            <h1>Attendance Reports</h1>
+            <p>Review event-wise attendance, participation, and attendance percentages.</p>
+        </section>
+
+        <!-- Summary cards -->
+        <section class="stats">
+            <article class="stat-card">
+                <div class="stat-icon">🎉</div>
+                <h3>Total Events</h3>
+                <div class="stat-value">{{ total_events }}</div>
+                <p class="stat-description">Events in the database</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">📝</div>
+                <h3>Active Registrations</h3>
+                <div class="stat-value">{{ total_registered }}</div>
+                <p class="stat-description">Registrations excluding cancelled ones</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">✅</div>
+                <h3>Present</h3>
+                <div class="stat-value">{{ total_present }}</div>
+                <p class="stat-description">Attendance records marked present</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">❌</div>
+                <h3>Absent</h3>
+                <div class="stat-value">{{ total_absent }}</div>
+                <p class="stat-description">Attendance records marked absent</p>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <h3>Not Marked</h3>
+                <div class="stat-value">{{ total_not_marked }}</div>
+                <p class="stat-description">Active registrations without attendance</p>
+            </article>
+        </section>
+
+        <!-- Event-wise report -->
+        <section class="card">
+            <div class="card-header">
+                <h2>📊 Event-wise Attendance Summary</h2>
+                <p>Attendance statistics for each event and its active registrations.</p>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Event Name</th>
+                            <th>Registrations</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Not Marked</th>
+                            <th>Attendance Rate</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for record in report_records %}
+                        <tr>
+                            <td><span class="id-badge">#{{ record[0] }}</span></td>
+                            <td><span class="event-name">{{ record[1] }}</span></td>
+                            <td>{{ record[2] }}</td>
+                            <td><span class="count-present">{{ record[3] }}</span></td>
+                            <td><span class="count-absent">{{ record[4] }}</span></td>
+                            <td>{{ record[5] }}</td>
+                            <td>
+                                {% if record[2] == 0 %}
+                                    <span class="percentage percentage-unmarked">No registrations</span>
+                                {% elif record[6] is none %}
+                                    <span class="percentage percentage-unmarked">Not Marked</span>
+                                {% elif record[6] == 0 %}
+                                    <span class="percentage percentage-zero">0%</span>
+                                {% else %}
+                                    <span class="percentage">{{ "%.1f"|format(record[6]) }}%</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" style="text-align:center;padding:35px;">
+                                No attendance report data is available yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                💡 Attendance rate = Present ÷ Registrations. For every event, Present + Absent + Not Marked = Registrations.
+            </div>
+        </section>
+
+        <footer class="footer">
+            <strong>Hostel Event Management System</strong> · Attendance Reports
+        </footer>
+    </main>
+</body>
+</html>
